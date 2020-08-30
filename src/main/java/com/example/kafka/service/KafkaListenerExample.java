@@ -1,5 +1,6 @@
 package com.example.kafka.service;
 
+import com.example.kafka.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,6 +19,22 @@ public class KafkaListenerExample {
       @Payload String message,
       @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
       @Header(KafkaHeaders.OFFSET) int offset) {
-    LOG.info("Received user [{}] from partition-{} with offset-{}", message, partition, offset);
+    LOG.info(
+        "Received user string event [{}] from partition-{} with offset-{}",
+        message,
+        partition,
+        offset);
+  }
+
+  @KafkaListener(
+      topics = "reflecetoring-2",
+      groupId = "reflectoring-user2",
+      containerFactory = "userKafkaListenerContainerFactory")
+  void commonListenerForObjectTopics(
+      @Payload User user,
+      @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
+      @Header(KafkaHeaders.OFFSET) int offset) {
+
+    LOG.info("Received user event [{}] from partition-{} with offset-{}", user, partition, offset);
   }
 }
